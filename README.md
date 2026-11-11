@@ -1,6 +1,6 @@
 # Safety — StrideSense race monitoring
 
-Download the installable APK from this repository’s **Releases** section. Download the source using **Code → Download ZIP**.
+Download **[safety-project.zip](https://github.com/Farandza/safety/raw/refs/heads/main/downloads/safety-project.zip)** for the source code and Android APK together. Extract the `safety` folder onto your desktop. The APK is inside as `safety.apk`. You can also download the source using **Code → Download ZIP**.
 
 Flutter Android app for safety officials. Fixed reviewer login: **official / Safety2026!**. These embedded credentials are a demonstration access gate, not production authentication.
 
