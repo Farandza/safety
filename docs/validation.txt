@@ -1,0 +1,5 @@
+Flutter analyzer: no issues found.
+Flutter tests: 6 passed.
+Browser: Chromium login, 1000 synthetic devices and runner-detail view verified with no page errors.
+Android: release APK built; v2 signature verified; minimum API 24, target API 36.
+Outstanding: device/emulator execution and actual generator integration (reports.proto and Compose file absent from uploaded brief).

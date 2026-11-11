@@ -1,0 +1,131 @@
+Safety 📊
+A Flutter app that monitors marathon runners, tracking performance and detecting health risks in real time.
+
+The situation 👀
+StrideSense, a wearable tech company, is field-testing smart sensors during a summer marathon. They've partnered with a sports club and need an app for safety officials to monitor high-frequency vitals and receive alerts for health risks.
+
+Marathon data generator
+Use the mock data generator to simulate runners' vitals. Download reports.proto here to see report structure and examples.
+
+Setup
+Install Docker and Docker Compose.
+
+Pull the Docker image:
+
+docker pull ghcr.io/futurecoders-org/marathon-data-generator:latest
+Download the docker-compose.yml file here.
+
+In the same directory as the Docker Compose file, run:
+
+docker compose up -d
+This command will run the containers in the background. If the run is successful, you will see the following output in the terminal:
+
+[+] Running 3/0
+ ✔ Container generator-zookeeper-1       Running                  0.0s
+ ✔ Container generator-kafka-1           Running                  0.0s
+ ✔ Container generator-data-generator-1  Running                  0.0s
+The exact names of the containers may differ on your machine, but they should include the words zookeeper-1, kafka-1, data-generator-1.
+
+If the containers start but do not remain running, execute docker compose up -d again.
+
+Open two terminals and run the following command in both of them:
+
+docker compose exec data-generator /bin/sh
+This will give you access to the command line interface of the data generator Docker container.
+
+In one terminal, run:
+
+./producer
+In the producer terminal, you will see occasional logs about reports sent and device control.
+
+The producer simulates reports from 500 wearable devices. The application backend and frontend should support analyzing and visualizing high-frequency report data from this number of simulated devices.
+
+In the other terminal, run:
+
+./client
+WebSocket access
+Data is streamed in JSON on port 8080. Connect using web_socket_channel:
+
+For iOS Simulator:
+
+final channel_1 = WebSocketChannel.connect(
+    Uri.parse('ws://localhost:8080/time_based_reports'),
+);
+final channel_2 = WebSocketChannel.connect(
+    Uri.parse('ws://localhost:8080/event_based_reports'),
+);
+For Android emulator:
+
+final channel_1 = WebSocketChannel.connect(
+    Uri.parse('ws://10.0.2.2:8080/time_based_reports'),
+);
+final channel_2 = WebSocketChannel.connect(
+    Uri.parse('ws://10.0.2.2:8080/event_based_reports'),
+);
+Functional requirements 📱
+Build the application in Flutter and test on iOS or Android (emulator or device).
+
+Access control
+Only safety officials should access runner data. Add login/password authentication with fixed credentials.
+
+Race Monitoring
+Display a list of runners, sortable by current position and device ID. Include a health status indicator (normal, warning, emergency), and allow filtering by health state.
+
+Vitals may need in-app calculations. For example:
+
+Heartbeats = rolling 5-second average (last 5 reports)
+Others (blood oxygen, temp, BP) come directly from reports.
+Data	Unit	Normal	Warning	Emergency
+Heartbeat	Beats/min (5s avg)	60-150	40-59, 151-170	Outside normal/warning
+Breath	Breaths/min (5s avg)	45-60	25-44, 61-85	Outside normal/warning
+Systolic BP	mmHg	<130	130-140	>140
+Diastolic BP	mmHg	<80	80-90	>90
+Blood Oxygen	% saturation	95-100	90-94	<90
+Temperature	Tenths of °C	36.0-38.5	38.6-39	>39
+One warning vital = "Warning" state
+One emergency vital = "Emergency" state
+Two+ warnings = also "Emergency"
+All vitals normal = "Normal"
+Push Notifications
+Show real-time alerts:
+
+Warning: Runner X is at risk. Blood oxygen < 95%.
+Emergency: Runner Y is ill. Temp = 39.6°C.
+Individual Health Observation
+Each runner has a detailed page with:
+
+Real-time: BPM, breath rate, distance, timestamp, health state
+Two line charts: BPM + breaths (last 10 mins), with background zones
+Event log: temp, BP, blood oxygen updates
+Real-Time Display Efficiency
+Only update on-screen widgets:
+
+Monitoring list: update visible runners only
+Runner page: update visible widgets only
+Outcome 🎯
+Final app should:
+
+Provide login access for safety officials
+Handle live data from 1,000 devices
+Monitor race + vitals in real time
+Send health alerts
+Offer detailed runner view
+Extra requirements 📚
+Reviewer-Friendly Setup
+To simplify the review and testing process, include ready-to-install .apk file so your project can be run without requiring a full Flutter or Android Studio setup.
+The reviewer should be able to interact with the app using the following quick methods:
+
+Install directly on an Android device
+Use a lightweight emulator (e.g. NoxPlayer, BlueStacks)
+Browser-based online emulator (e.g. appetize)
+A short Reviewer Guide section must be provided in the README explaining how to use each option above to open and interact with the app. If the .apk file exceeds Git hosting limits (e.g., >20–50 MB), it should be provided via external storage (e.g. Google Drive, Dropbox, or a GitHub Release).
+Bonus functionality 🎁
+You're welcome to implement other features as you see fit. However, your implementation must not change your project's default functional behavior.
+
+You may use any additional tools, command line arguments, or separate builds to switch your bonus functionality on.
+
+Useful links 🔗
+Flutter Docs
+Dart Docs
+Flutter Widget Catalog
+Flutter Charts
